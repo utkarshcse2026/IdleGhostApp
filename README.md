@@ -23,6 +23,7 @@
 ## 📸 Screenshots
 
 > _(Add screenshots here showing the GUI in action, logs updating, and the minimized state)_
+<img width="610" height="533" alt="{9EC24BA3-DA13-4F61-94B6-DC8B9D56CD02}" src="https://github.com/user-attachments/assets/76107c09-55d4-4d0b-9481-172fde0126a0" />
 
 ---
 
