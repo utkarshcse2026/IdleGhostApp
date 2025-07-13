@@ -1,0 +1,2 @@
+# IdleGhost-
+Anti-Idle-Tool
