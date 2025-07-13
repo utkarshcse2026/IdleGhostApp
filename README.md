@@ -22,8 +22,11 @@
 
 ## 📸 Screenshots
 
-> _(Add screenshots here showing the GUI in action, logs updating, and the minimized state)_
+> _(Below are the screenshots here showing the GUI in action, logs updating, and the minimized state)_
+![2](https://github.com/user-attachments/assets/0f199968-c2ae-40d2-8a04-540612f68502)
+
 ![WhatsApp Image 2025-07-13 at 18 42 32_e8cc7a26](https://github.com/user-attachments/assets/fe91901f-99c7-46be-b6b8-4d8983371af7)
+
 
 ---
 
