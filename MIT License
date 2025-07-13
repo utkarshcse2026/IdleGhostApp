@@ -1,3 +1,31 @@
+🤝 Contributing # 👻 IdleGhost
+
+Feel free to fork this repo, submit PRs, or suggest improvements!
+
+Simulate user activity to prevent idle detection by trackers like Hubstaff and Time Doctor.
+
+## 🔧 Features
+- Mouse movement, keystrokes, and scroll simulation
+- Fun, sarcastic terminal messages
+- Ctrl+C global detection to stop the app
+- Auto-start, auto-minimize, background behavior
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/yourusername/IdleGhost.git
+cd IdleGhost
+pip install -r requirements.txt
+python idleghost.py
+pyinstaller --noconsole --onefile --icon=icon.ico idleghost.py
+
+
+
+
+
+
+
 
 Copyright (c) 2025 Utkarsh Aggarwal
 
