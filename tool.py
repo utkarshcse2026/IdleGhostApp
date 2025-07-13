@@ -55,6 +55,9 @@ class AntiIdleApp:
 
         self.update_runtime()
 
+        # 🚀 AUTOSTART after GUI loads
+        self.root.after(500, self.start_script)
+
     def global_hotkey_listener(self):
         keyboard.add_hotkey("ctrl+c", self.ctrl_c_trigger)
 
@@ -114,7 +117,6 @@ class AntiIdleApp:
         self.log("💥 Script terminated. Your fake productivity dreams have been shattered 💻🪦.")
 
     def run_script(self):
-        # Countdown
         for i in range(5, 0, -1):
             if not self.running:
                 return
@@ -124,7 +126,6 @@ class AntiIdleApp:
         self.log("🚀 Script started! Because actually working is overrated 😌.")
         self.log("🖱️ Sit back and relax — I’ll wiggle the mouse like a pro while you daydream about quitting 💼💭.\n")
 
-        # Auto-minimize after 5 seconds
         self.root.after(5000, lambda: self.root.iconify() if self.running else None)
 
         threading.Thread(target=self.move_mouse, daemon=True).start()
