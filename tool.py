@@ -3,35 +3,60 @@ import time
 import random
 import threading
 
+# Countdown before start
+def countdown():
+    for i in range(5, 0, -1):
+        print(f"Starting in {i}...")
+        time.sleep(1)
+print("\n🚀 Script started! Because actually working is overrated 😌.")
+print("\n🖱️ Sit back and relax — I’ll wiggle the mouse like a pro while you daydream about quitting 💼💭.")
+
+# Human-like mouse movement
 def move_mouse():
     screenWidth, screenHeight = pyautogui.size()
-
     while True:
-        # Random position within screen bounds
         x = random.randint(100, screenWidth - 100)
         y = random.randint(100, screenHeight - 100)
-
-        # Random duration to mimic human movement
-        duration = random.uniform(0.3, 1.2)
-
+        duration = random.uniform(0.3, 0.8)
         pyautogui.moveTo(x, y, duration=duration)
+        if random.random() < 0.4:
+            pyautogui.click()
+        time.sleep(random.uniform(10, 20))
 
-        # Small pause before next move
-        time.sleep(random.uniform(5, 15))
-
+# Simulate keypresses like ".", "backspace"
 def press_keys():
+    keys = ['backspace', '.', ',', 'tab']
     while True:
-        # Simulate pressing Shift or Ctrl every 30–90 seconds
-        key = random.choice(['shift', 'ctrl', 'alt'])
-        pyautogui.keyDown(key)
-        time.sleep(0.1)
-        pyautogui.keyUp(key)
+        key = random.choice(keys)
+        pyautogui.press(key)
+        time.sleep(random.randint(20, 40))
 
-        time.sleep(random.randint(30, 90))
+# Simulate scrolls
+def scroll_mouse():
+    while True:
+        pyautogui.scroll(random.randint(-10, 10))
+        time.sleep(random.randint(30, 60))
 
-# Run mouse and keyboard simulation in parallel
-mouse_thread = threading.Thread(target=move_mouse)
-keyboard_thread = threading.Thread(target=press_keys)
+# Start everything
+def main():
+    countdown()
+    try:
+        threads = [
+            threading.Thread(target=move_mouse),
+            threading.Thread(target=press_keys),
+            threading.Thread(target=scroll_mouse),
+        ]
+        for t in threads:
+            t.daemon = True  # Ensure threads exit on Ctrl+C
+            t.start()
+        while True:
+            time.sleep(1)  # Keep main thread alive
+    except KeyboardInterrupt:
+       print("\n🛑 Well well well... Look who finally touched the keyboard ⌨️.")
+       print("🤨 Ctrl+C huh? Bold move. Guess I’ll go sleep now 😴.")
+       print("🙄 You stopped me? Fine. Go ahead and be *actually* productive now 💪.")
+       print("😒 Okay okay, I’ll stop pretending you're working. Chill.")
+       print("💥 Script terminated. Your fake productivity dreams have been shattered 💻🪦.")
 
-mouse_thread.start()
-keyboard_thread.start()
+if __name__ == "__main__":
+    main()
