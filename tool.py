@@ -4,10 +4,11 @@ import random
 import threading
 import tkinter as tk
 from tkinter import scrolledtext
-import keyboard
+import keyboard  # v1.4.0
 import datetime
 import sys
 
+# === v1.2.0: Beautiful UI Revamp ===
 class AntiIdleApp:
     def __init__(self, root):
         self.root = root
@@ -16,23 +17,21 @@ class AntiIdleApp:
         self.root.resizable(False, False)
         self.running = False
         self.start_time = None
-        self.launch_time = datetime.datetime.now()
+        self.launch_time = datetime.datetime.now()  # v1.3.0
 
-        # Global hotkey listener for Ctrl+C
+        # === v1.4.0: Global Hotkey & Auto Shutdown ===
         threading.Thread(target=self.global_hotkey_listener, daemon=True).start()
 
-        # Prevent minimize in first 10 sec
+        # === v1.3.0: Prevent early minimize ===
         self.root.bind("<Unmap>", self.on_minimize)
 
-        # Title
+        # === v1.2.0: Beautiful UI Layout ===
         title = tk.Label(root, text="Hubstaff Anti-Idle Utility 💼", bg="#1e1e2f", fg="#61dafb", font=("Helvetica", 18, "bold"))
         title.pack(pady=(15, 5))
 
-        # Subtitle
         subtitle = tk.Label(root, text="Faking productivity so well, even your boss might get a raise.", bg="#1e1e2f", fg="#cccccc", font=("Helvetica", 10, "italic"))
         subtitle.pack(pady=(0, 10))
 
-        # Buttons
         button_frame = tk.Frame(root, bg="#1e1e2f")
         button_frame.pack()
 
@@ -44,20 +43,19 @@ class AntiIdleApp:
                                      bg="#f44336", fg="white", font=("Helvetica", 12, "bold"), width=12)
         self.stop_button.grid(row=0, column=1, padx=10, pady=10)
 
-        # Runtime label
-        self.runtime_label = tk.Label(root, text="", bg="#1e1e2f", fg="#aaaaaa", font=("Helvetica", 9))
+        self.runtime_label = tk.Label(root, text="", bg="#1e1e2f", fg="#aaaaaa", font=("Helvetica", 9))  # v1.2.0
         self.runtime_label.pack()
 
-        # Log box
         self.output = scrolledtext.ScrolledText(root, width=70, height=15, font=("Consolas", 10),
                                                 bg="#2c2f4a", fg="white", insertbackground="white", wrap=tk.WORD)
         self.output.pack(padx=20, pady=(5, 15))
 
         self.update_runtime()
 
-        # 🚀 AUTOSTART after GUI loads
+        # === v1.6.0: Full AutoStart Mode ===
         self.root.after(500, self.start_script)
 
+    # === v1.4.0: Global Ctrl+C Listener ===
     def global_hotkey_listener(self):
         keyboard.add_hotkey("ctrl+c", self.ctrl_c_trigger)
 
@@ -68,7 +66,7 @@ class AntiIdleApp:
         self.show_again()
         self.stop_script()
         self.log("💤 App will close in 5 seconds...")
-        self.root.after(5000, self.root.quit)
+        self.root.after(5000, self.root.quit)  # v1.4.0
 
     def show_again(self):
         self.root.deiconify()
@@ -77,6 +75,7 @@ class AntiIdleApp:
         self.root.after(500, lambda: self.root.attributes("-topmost", False))
         self.log("🧞‍♂️ Ctrl+C detected globally — I’m back on screen and stopping the hustle!")
 
+    # === v1.3.0: Block minimize before 10s ===
     def on_minimize(self, event):
         if (datetime.datetime.now() - self.launch_time).total_seconds() < 10:
             self.root.deiconify()
@@ -117,6 +116,7 @@ class AntiIdleApp:
         self.log("💥 Script terminated. Your fake productivity dreams have been shattered 💻🪦.")
 
     def run_script(self):
+        # === v1.1.0: Countdown & Emojis ===
         for i in range(5, 0, -1):
             if not self.running:
                 return
@@ -126,8 +126,10 @@ class AntiIdleApp:
         self.log("🚀 Script started! Because actually working is overrated 😌.")
         self.log("🖱️ Sit back and relax — I’ll wiggle the mouse like a pro while you daydream about quitting 💼💭.\n")
 
+        # === v1.5.0: Auto-minimize after 5s ===
         self.root.after(5000, lambda: self.root.iconify() if self.running else None)
 
+        # === v1.0.0: Base simulation threads ===
         threading.Thread(target=self.move_mouse, daemon=True).start()
         threading.Thread(target=self.press_keys, daemon=True).start()
         threading.Thread(target=self.scroll_mouse, daemon=True).start()
@@ -138,6 +140,7 @@ class AntiIdleApp:
             x = random.randint(100, screenWidth - 100)
             y = random.randint(100, screenHeight - 100)
             duration = random.uniform(0.3, 0.8)
+        # === v1.0.0: Mouse move & click ===
             pyautogui.moveTo(x, y, duration=duration)
             if random.random() < 0.4:
                 pyautogui.click()
@@ -155,7 +158,7 @@ class AntiIdleApp:
             pyautogui.scroll(random.randint(-10, 10))
             time.sleep(random.randint(30, 60))
 
-
+# === v1.0.0: Entry point ===
 if __name__ == "__main__":
     root = tk.Tk()
     app = AntiIdleApp(root)
