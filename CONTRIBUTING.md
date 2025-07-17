@@ -1,4 +1,3 @@
-
 # 👻 IdleGhost Contributor Manifesto
 
 Welcome to the **IdleGhost** project — where stealth meets automation.
@@ -30,11 +29,8 @@ To maintain the integrity of the project, please follow these rules:
 
 * **Fork** the repository before making any changes
 * **Create your own branch**, named after your GitHub username or feature:
-
-  ```
-  git checkout -b feature/yourname
-  ```
-* **Code responsibly and cleanly**: Comment your logic, format your files, and test your changes
+* git checkout -b feature/yourname
+* * **Code responsibly and cleanly**: Comment your logic, format your files, and test your changes
 * **Submit a Pull Request (PR)** with a clear description of what you're adding or fixing
 * **Open issues** to suggest features or report bugs
 * **Respect others' contributions**
@@ -88,8 +84,8 @@ You can also contribute by improving the docs, writing setup tutorials, or makin
 
 This project is released under the [MIT License](LICENSE), which allows broad use and modification — but you must retain attribution.
 
-> Use responsibly.
-> Don’t deploy this in ways that violate company policies, agreements, or platform rules.
+> Use responsibly.  
+> Don’t deploy this in ways that violate company policies, agreements, or platform rules.  
 > Be smart. Be ethical. Be ghostly. 👻
 
 ---
@@ -110,7 +106,53 @@ Together, we’ll build the most lovable little ghost the system never saw comin
 
 ---
 
-**CLONE — CODE — CREATE — CONTRIBUTE**
+**CLONE — CODE — CREATE — CONTRIBUTE**  
 Let’s haunt some time trackers and learn while doing it.
 
 — *Utkarsh Aggarwal (Project Creator)*
+
+---
+
+# 👾 Additional Contribution Notes (aka Sarcastic Survival Guide)
+
+Welcome to IdleGhost – the productivity app for your keyboard’s ghost.  
+This isn’t your grandma’s idle script. We have standards. And sass.
+
+## 🧠 What We Expect
+
+- **Stealth is non-negotiable** – no random popups, no noisy windows, no taskbar betrayal.
+- **Sarcasm is sacred** – if you're not coding with a smirk, you're probably doing it wrong.
+- **Code should work** – yes, even ghostly simulations need structure.
+
+## 💻 How to Contribute
+
+1. **Fork** the repo  
+2. **Clone** your fork locally  
+3. Create a **new branch** for your feature/fix  
+4. Make changes (quietly and cleverly)  
+5. Commit with sarcastic flair  
+6. Push and open a **PR** (Pull Request)
+
+## 🛠️ Development Ground Rules
+
+- Use **Python 3.8+**
+- Stick to **Tkinter** and light dependencies
+- Make logs **funny, local, and safe**
+- Maintain **stealth and minimalism**
+
+## 📁 Folder Structure
+
+- `main.py` – ghost HQ
+- `assets/` – icons, easter eggs, etc.
+- `activity_logs/` – fake work archive vault
+
+## ⚖️ Legal Witchcraft
+
+MIT License. No lawsuits. Just give credit.
+
+---
+
+**Made with sarcasm by Utkarsh Aggarwal**  
+*Simulate Work. Real Results.*
+
+
