@@ -1,5 +1,11 @@
 # 👻 IdleGhost — The Ultimate Anti-Idle Mouse & Keyboard Automator
 
+## 👑 Creator
+
+**IdleGhost** was created and maintained by [Utkarsh Aggarwal](https://github.com/utkarshcse2026).  
+Made with sarcasm, caffeine, and zero warranty.
+
+
 **IdleGhost** is a stealthy and smart desktop application that simulates human-like mouse movements, keystrokes, and scrolling to prevent you from being marked as “idle” by time tracking software like **Hubstaff**, **Time Doctor**, or **Teramind**.
 
 > 🚀 "Faking productivity so convincingly, your boss might get promoted."
