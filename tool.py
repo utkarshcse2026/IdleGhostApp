@@ -1,183 +1,396 @@
-import pyautogui
+import tkinter as tk
+from tkinter import ttk
+import threading
 import time
 import random
-import threading
-import tkinter as tk
-from tkinter import scrolledtext
-import keyboard
-import datetime
-import sys
 import os
-from PIL import Image
-import pystray
+import csv
+from datetime import datetime
+import sys
+import ctypes
+from ctypes import wintypes
+import keyboard
+import win32gui
+import win32con
+import win32api
 
-class AntiIdleApp:
+# Constants for Windows API
+SW_HIDE = 0
+SW_SHOW = 5
+GWL_EXSTYLE = -20
+WS_EX_TOOLWINDOW = 0x00000080
+WS_EX_APPWINDOW = 0x00040000
+
+class ActivityLogger:
+    def __init__(self, filename="logs/activity_log.csv"):
+        self.filename = filename
+        self.ensure_log_directory()
+        self.initialize_log_file()
+
+    def ensure_log_directory(self):
+        """Create logs directory if it doesn't exist"""
+        try:
+            os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        except Exception as e:
+            print(f"Error creating log directory: {e}")
+
+    def initialize_log_file(self):
+        """Initialize the log file with headers"""
+        try:
+            if not os.path.exists(self.filename):
+                with open(self.filename, mode='w', newline='', encoding='utf-8') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(["Timestamp", "Action"])
+        except Exception as e:
+            print(f"Error initializing log file: {e}")
+
+    def log(self, action):
+        """Log an action with timestamp"""
+        try:
+            with open(self.filename, mode='a', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S'), action])
+        except Exception as e:
+            print(f"Error logging action: {e}")
+
+class IdleSimulator:
+    def __init__(self):
+        self.running = False
+        self.thread = None
+        self.keys = [
+            0x09,  # TAB
+            0x20,  # SPACE
+            0x08,  # BACKSPACE
+            0x14,  # CAPS LOCK
+            0x11,  # CTRL
+            0x12,  # ALT
+            0x10,  # SHIFT
+            0x21,  # PAGE UP
+            0x22,  # PAGE DOWN
+            0x25,  # LEFT ARROW
+            0x26,  # UP ARROW
+            0x27,  # RIGHT ARROW
+            0x28,  # DOWN ARROW
+        ]
+        self.sarcastic_messages = [
+            "👻 Pretending to be productive... Classic!",
+            "🤖 Beep boop, I'm totally working right now!",
+            "📊 Generating fake productivity reports...",
+            "💼 Looking busy while doing absolutely nothing!",
+            "🎭 Oscar-worthy performance of a working employee!",
+            "⚡ Simulating the illusion of dedication!",
+            "🎪 Welcome to the greatest show on earth: Fake Work!",
+            "🕺 Dancing around actual responsibilities like a pro!",
+            "🎯 Mission: Look busy. Status: Nailed it!",
+            "🎨 Crafting the masterpiece of procrastination!",
+            "🚀 Launching into orbit... of laziness!",
+            "🎲 Rolling the dice on fake productivity!",
+            "🎪 Step right up to the circus of simulated work!",
+            "🌟 Shining bright like a fake diamond of diligence!"
+        ]
+
+    def start(self):
+        """Start the idle simulation"""
+        if not self.running:
+            self.running = True
+            self.thread = threading.Thread(target=self._simulate, daemon=True)
+            self.thread.start()
+            logger.log("Simulation started")
+            if hasattr(self, 'app_instance'):
+                self.app_instance.log_output("🌀 Simulation engine engaged. Time to look alive!")
+
+    def stop(self):
+        """Stop the idle simulation"""
+        self.running = False
+        if self.thread and self.thread.is_alive():
+            self.thread.join(timeout=2)
+        logger.log("Simulation stopped")
+        if hasattr(self, 'app_instance'):
+            self.app_instance.log_output("🛑 Simulation halted. Go take a nap or something.")
+
+    def _simulate(self):
+        """Main simulation loop"""
+        while self.running:
+            try:
+                action = random.choice(["Mouse Move", "Key Press"])
+                logger.log(f"Simulating {action}")
+                
+                # Random sarcastic message
+                sarcastic_msg = random.choice(self.sarcastic_messages)
+                if hasattr(self, 'app_instance'):
+                    self.app_instance.log_output(f"{sarcastic_msg}")
+                
+                if action == "Mouse Move":
+                    self._move_mouse()
+                else:
+                    self._press_key()
+                
+                # Random delay between 2.5 to 4.5 seconds for human-like behavior
+                time.sleep(random.uniform(2.5, 4.5))
+                
+            except Exception as e:
+                logger.log(f"Error in simulation: {e}")
+                if hasattr(self, 'app_instance'):
+                    self.app_instance.log_output(f"💥 Oops! Something went wrong: {str(e)}")
+
+    def _move_mouse(self):
+        """Move mouse cursor to random position"""
+        try:
+            # Get screen dimensions
+            screen_width = win32api.GetSystemMetrics(0)
+            screen_height = win32api.GetSystemMetrics(1)
+            
+            # Generate random position (avoiding edges)
+            x = random.randint(100, screen_width - 100)
+            y = random.randint(100, screen_height - 100)
+            
+            # Move cursor smoothly
+            current_x, current_y = win32gui.GetCursorPos()
+            steps = random.randint(5, 15)
+            
+            for i in range(steps):
+                intermediate_x = current_x + (x - current_x) * (i / steps)
+                intermediate_y = current_y + (y - current_y) * (i / steps)
+                win32api.SetCursorPos((int(intermediate_x), int(intermediate_y)))
+                time.sleep(0.01)
+                
+            if hasattr(self, 'app_instance'):
+                self.app_instance.log_output(f"🖱️ Mouse teleported to ({x}, {y})")
+                
+        except Exception as e:
+            logger.log(f"Error moving mouse: {e}")
+
+    def _press_key(self):
+        """Press a random key"""
+        try:
+            key = random.choice(self.keys)
+            
+            # Press and release key
+            win32api.keybd_event(key, 0, 0, 0)
+            time.sleep(random.uniform(0.05, 0.15))  # Hold key for realistic duration
+            win32api.keybd_event(key, 0, win32con.KEYEVENTF_KEYUP, 0)
+            
+            key_names = {
+                0x09: "TAB", 0x20: "SPACE", 0x08: "BACKSPACE", 0x14: "CAPS LOCK",
+                0x11: "CTRL", 0x12: "ALT", 0x10: "SHIFT", 0x21: "PAGE UP",
+                0x22: "PAGE DOWN", 0x25: "LEFT ARROW", 0x26: "UP ARROW",
+                0x27: "RIGHT ARROW", 0x28: "DOWN ARROW"
+            }
+            
+            key_name = key_names.get(key, f"Key {key}")
+            if hasattr(self, 'app_instance'):
+                self.app_instance.log_output(f"⌨️ Tapped {key_name} like a typing ninja!")
+                
+        except Exception as e:
+            logger.log(f"Error pressing key: {e}")
+
+class IdleGhostApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🖱️ Anti-Idle Productivity Booster")
-        self.root.configure(bg="#1e1e2f")
+        self.setup_window()
+        self.simulator = IdleSimulator()
+        self.simulator.app_instance = self
+        self.setup_ui()
+        self.setup_stealth_features()
+        self.setup_hotkeys()
+        self.auto_start()
+
+    def setup_window(self):
+        """Configure the main window"""
+        self.root.title("IdleGhost 👻 - Simulate Work. Real Results.")
+        self.root.geometry("500x400")
+        self.root.configure(bg="#1f1f1f")
+        self.root.attributes("-alpha", 0.65)
+        self.root.attributes("-topmost", True)
+        self.root.protocol("WM_DELETE_WINDOW", self.exit_app)
         self.root.resizable(False, False)
-        self.running = False
-        self.start_time = None
-        self.launch_time = datetime.datetime.now()
-        self.icon = None
 
-        # ✅ Global hotkey listener
-        threading.Thread(target=self.global_hotkey_listener, daemon=True).start()
+    def setup_ui(self):
+        """Setup the user interface"""
+        # Configure style
+        style = ttk.Style()
+        style.theme_use("clam")
+        style.configure("TButton", background="#333", foreground="white", 
+                       padding=10, font=("Segoe UI", 10, "bold"))
+        style.configure("TLabel", background="#1f1f1f", foreground="white")
 
-        # ❌ No minimize for 10 seconds
-        self.root.bind("<Unmap>", self.on_minimize)
+        # Title
+        self.title_label = tk.Label(self.root, text="👻 IdleGhost", 
+                                   font=("Segoe UI", 16, "bold"), 
+                                   fg="#5DEBD7", bg="#1f1f1f")
+        self.title_label.pack(pady=10)
 
-        # ✅ UI Setup
-        title = tk.Label(root, text="Anti-Idle Utility 💼", bg="#1e1e2f", fg="#61dafb", font=("Helvetica", 18, "bold"))
-        title.pack(pady=(15, 5))
+        # Subtitle
+        self.subtitle_label = tk.Label(self.root, text="Stealth Mode: Activated", 
+                                      font=("Segoe UI", 10), 
+                                      fg="#888", bg="#1f1f1f")
+        self.subtitle_label.pack(pady=5)
 
-        subtitle = tk.Label(root, text="Faking productivity so well, even your boss might get a raise.",
-                            bg="#1e1e2f", fg="#cccccc", font=("Helvetica", 10, "italic"))
-        subtitle.pack(pady=(0, 10))
+        # Log box
+        self.log_box = tk.Text(self.root, height=12, width=60, 
+                              bg="#121212", fg="white", 
+                              bd=0, highlightthickness=0,
+                              font=("Consolas", 9))
+        self.log_box.pack(padx=10, pady=10)
 
-        button_frame = tk.Frame(root, bg="#1e1e2f")
-        button_frame.pack()
+        # Buttons frame
+        button_frame = tk.Frame(self.root, bg="#1f1f1f")
+        button_frame.pack(pady=10)
 
-        self.start_button = tk.Button(button_frame, text="▶️ Start", command=self.start_script,
-                                      bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"), width=12)
-        self.start_button.grid(row=0, column=0, padx=10, pady=10)
+        self.start_btn = ttk.Button(button_frame, text="🔥 Start Simulation", 
+                                   command=self.start_simulation)
+        self.start_btn.pack(side=tk.LEFT, padx=5)
 
-        self.stop_button = tk.Button(button_frame, text="⏹️ Stop", command=self.stop_script,
-                                     bg="#f44336", fg="white", font=("Helvetica", 12, "bold"), width=12)
-        self.stop_button.grid(row=0, column=1, padx=10, pady=10)
+        self.stop_btn = ttk.Button(button_frame, text="❄️ Stop Simulation", 
+                                  command=self.stop_simulation)
+        self.stop_btn.pack(side=tk.LEFT, padx=5)
 
-        self.runtime_label = tk.Label(root, text="", bg="#1e1e2f", fg="#aaaaaa", font=("Helvetica", 9))
-        self.runtime_label.pack()
+        self.exit_btn = ttk.Button(button_frame, text="💀 Exit", 
+                                  command=self.exit_app)
+        self.exit_btn.pack(side=tk.LEFT, padx=5)
 
-        self.output = scrolledtext.ScrolledText(root, width=70, height=15, font=("Consolas", 10),
-                                                bg="#2c2f4a", fg="white", insertbackground="white", wrap=tk.WORD)
-        self.output.pack(padx=20, pady=(5, 15))
+        # Status
+        self.status_label = tk.Label(self.root, text="Status: Ready to Ghost", 
+                                    font=("Segoe UI", 9), 
+                                    fg="#5DEBD7", bg="#1f1f1f")
+        self.status_label.pack(pady=5)
 
-        self.update_runtime()
-        self.root.after(500, self.start_script)
+    def setup_stealth_features(self):
+        """Setup stealth features"""
+        # Hide from taskbar
+        self.root.after(100, self.hide_from_taskbar)
+        
+        # Monitor for minimize
+        self.root.after(500, self.monitor_minimize)
 
-    # ✅ HOTKEY FIXED: Only 1 press needed
-    def global_hotkey_listener(self):
-        keyboard.add_hotkey("ctrl+c", lambda: self.ctrl_c_actions())
+    def hide_from_taskbar(self):
+        """Hide window from taskbar"""
+        try:
+            hwnd = self.root.winfo_id()
+            # Remove from taskbar
+            win32gui.SetWindowLong(hwnd, GWL_EXSTYLE, 
+                                  win32gui.GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TOOLWINDOW)
+        except Exception as e:
+            logger.log(f"Error hiding from taskbar: {e}")
 
-    def ctrl_c_actions(self):
-        self.show_again()
-        self.stop_script()
-        self.log("💤 App will close in 5 seconds...")
-        self.save_log()
-        self.root.after(5000, self.root.quit)
+    def monitor_minimize(self):
+        """Monitor for window minimize and hide it"""
+        try:
+            hwnd = self.root.winfo_id()
+            if win32gui.IsIconic(hwnd):
+                win32gui.ShowWindow(hwnd, SW_HIDE)
+        except Exception as e:
+            pass
+        self.root.after(500, self.monitor_minimize)
 
-    def on_minimize(self, event):
-        if (datetime.datetime.now() - self.launch_time).total_seconds() < 10:
+    def setup_hotkeys(self):
+        """Setup global hotkeys"""
+        try:
+            # Setup Ctrl+C hotkey in a separate thread
+            threading.Thread(target=self.hotkey_listener, daemon=True).start()
+        except Exception as e:
+            logger.log(f"Error setting up hotkeys: {e}")
+
+    def hotkey_listener(self):
+        """Listen for global hotkeys"""
+        try:
+            keyboard.add_hotkey("ctrl+c", self.popup_and_exit)
+            keyboard.wait()
+        except Exception as e:
+            logger.log(f"Hotkey listener error: {e}")
+
+    def popup_and_exit(self):
+        """Show window and exit after Ctrl+C"""
+        try:
+            logger.log("Ctrl+C pressed. Time to vanish...")
+            self.root.after(0, self.show_window)
+            self.log_output("👋 Ctrl+C caught. Ghosting out in 3 seconds...")
+            self.root.after(3000, self.exit_app)
+        except Exception as e:
+            logger.log(f"Error in popup_and_exit: {e}")
+
+    def show_window(self):
+        """Show the hidden window"""
+        try:
             self.root.deiconify()
             self.root.lift()
-            self.log("⚠️ Hold on! Can't minimize me yet. I need at least 10 seconds of fame 😤.")
+            self.root.focus_force()
+        except Exception as e:
+            logger.log(f"Error showing window: {e}")
 
-    def show_again(self):
-        self.root.deiconify()
-        self.root.lift()
-        self.root.attributes("-topmost", True)
-        self.root.after(500, lambda: self.root.attributes("-topmost", False))
-        self.log("🧞‍♂️ Ctrl+C detected globally — I’m back on screen and stopping the hustle!")
-
-    def log(self, msg):
-        self.output.insert(tk.END, msg + "\n")
-        self.output.see(tk.END)
-
-    def clear_log(self):
-        self.output.delete('1.0', tk.END)
-
-    def save_log(self):
-        with open("idleghost_log.txt", "w", encoding="utf-8") as f:
-            f.write(self.output.get('1.0', tk.END))
-
-    def update_runtime(self):
-        if self.running and self.start_time:
-            elapsed = int(time.time() - self.start_time)
-            self.runtime_label.config(text=f"⏳ Running for {elapsed} seconds")
-        else:
-            self.runtime_label.config(text="")
-        self.root.after(1000, self.update_runtime)
-
-    def start_script(self):
-        if not self.running:
-            self.clear_log()
-            self.running = True
-            self.start_time = time.time()
-            threading.Thread(target=self.run_script, daemon=True).start()
-
-    def stop_script(self):
-        if not self.running:
-            return
-        self.running = False
-        self.start_time = None
-        self.log("\n🛑 Well well well... Look who finally touched the Stop button ⌨️.")
-        self.log("🤨 Bold move. Guess I’ll go sleep now 😴.")
-        self.log("🙄 You stopped me? Fine. Go ahead and be *actually* productive now 💪.")
-        self.log("😒 Okay okay, I’ll stop pretending you're working. Chill.")
-        self.log("💥 Script terminated. Your fake productivity dreams have been shattered 💻🪦.")
-        self.save_log()
-        if self.icon:
-            self.icon.stop()
-
-    def run_script(self):
-        for i in range(5, 0, -1):
-            if not self.running:
-                return
-            self.log(f"⏱️ Starting in {i}{'.' * (6 - i)}")
-            time.sleep(1)
-
-        self.log("🚀 Script started! Because actually working is overrated 😌.")
-        self.log("🖱️ Sit back and relax — I’ll wiggle the mouse like a pro while you daydream about quitting 💼💭.\n")
+    def auto_start(self):
+        """Auto-start simulation and hide window"""
+        self.log_output("🚀 IdleGhost is initializing...")
+        self.log_output("⚡ Auto-starting simulation for maximum stealth!")
+        self.simulator.start()
+        self.log_output("🫥 Going invisible in 5 seconds...")
+        self.log_output("💡 Use Ctrl+C to summon me back!")
+        
+        # Hide window after 5 seconds
         self.root.after(5000, self.hide_window)
-        threading.Thread(target=self.move_mouse, daemon=True).start()
-        threading.Thread(target=self.press_keys, daemon=True).start()
-        threading.Thread(target=self.scroll_mouse, daemon=True).start()
 
     def hide_window(self):
-        if self.running:
+        """Hide the window"""
+        try:
             self.root.withdraw()
-            self.start_tray_icon()
+            self.log_output("👻 Vanished! I'm now invisible and working in the shadows...")
+        except Exception as e:
+            logger.log(f"Error hiding window: {e}")
 
-    def move_mouse(self):
-        screenWidth, screenHeight = pyautogui.size()
-        while self.running:
-            x = random.randint(100, screenWidth - 100)
-            y = random.randint(100, screenHeight - 100)
-            duration = random.uniform(0.3, 0.8)
-            pyautogui.moveTo(x, y, duration=duration)
-            if random.random() < 0.4:
-                pyautogui.click()
-            time.sleep(random.uniform(10, 20))
+    def start_simulation(self):
+        """Start the simulation"""
+        self.simulator.start()
+        self.status_label.config(text="Status: Ghosting in Progress", fg="#00ff00")
 
-    def press_keys(self):
-        keys = ['backspace', '.', ',', 'tab']
-        while self.running:
-            key = random.choice(keys)
-            pyautogui.press(key)
-            time.sleep(random.randint(20, 40))
+    def stop_simulation(self):
+        """Stop the simulation"""
+        self.simulator.stop()
+        self.status_label.config(text="Status: Ghost Mode Disabled", fg="#ff4444")
 
-    def scroll_mouse(self):
-        while self.running:
-            pyautogui.scroll(random.randint(-10, 10))
-            time.sleep(random.randint(30, 60))
+    def log_output(self, text):
+        """Add text to the log box"""
+        try:
+            self.log_box.insert(tk.END, f"[{datetime.now().strftime('%H:%M:%S')}] {text}\n")
+            self.log_box.see(tk.END)
+            self.root.update_idletasks()
+        except Exception as e:
+            print(f"Error logging output: {e}")
 
-    def start_tray_icon(self):
-        image = Image.new('RGB', (64, 64), color='black')
-        self.icon = pystray.Icon("IdleGhost", image, "IdleGhost", menu=pystray.Menu(
-            pystray.MenuItem("Show Window", self.tray_restore),
-            pystray.MenuItem("Quit", self.tray_quit)
-        ))
-        threading.Thread(target=self.icon.run, daemon=True).start()
+    def exit_app(self):
+        """Exit the application"""
+        try:
+            self.log_output("💀 Preparing final ghost report...")
+            self.simulator.stop()
+            logger.log("Application closed gracefully")
+            self.log_output("📊 Mission accomplished! All activities logged.")
+            self.log_output("👻 IdleGhost signing off... See you on the other side!")
+            
+            # Final delay before closing
+            self.root.after(2000, self.root.destroy)
+        except Exception as e:
+            logger.log(f"Error during exit: {e}")
+            self.root.destroy()
 
-    def tray_restore(self, icon=None, item=None):
-        self.show_again()
-
-    def tray_quit(self, icon=None, item=None):
-        self.ctrl_c_actions()
+def main():
+    """Main function to run the application"""
+    try:
+        # Initialize logger
+        global logger
+        logger = ActivityLogger()
+        logger.log("IdleGhost application started")
+        
+        # Create and run the application
+        root = tk.Tk()
+        app = IdleGhostApp(root)
+        
+        # Start the main loop
+        root.mainloop()
+        
+    except Exception as e:
+        print(f"Fatal error: {e}")
+        if 'logger' in globals():
+            logger.log(f"Fatal error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = AntiIdleApp(root)
-    root.mainloop()
+    main()
