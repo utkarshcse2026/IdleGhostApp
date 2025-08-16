@@ -197,10 +197,10 @@ class IdleGhostApp:
 
     def setup_window(self):
         """Configure the main window"""
-        self.root.title("IdleGhost 👻 - Simulate Work. Real Results.")
+        self.root.title("IdleGhost :: Hacker Terminal")
         self.root.geometry("500x400")
-        self.root.configure(bg="#1f1f1f")
-        self.root.attributes("-alpha", 0.65)
+        self.root.configure(bg="#000000")
+        self.root.attributes("-alpha", 0.85)
         self.root.attributes("-topmost", True)
         self.root.protocol("WM_DELETE_WINDOW", self.exit_app)
         self.root.resizable(False, False)
@@ -210,49 +210,69 @@ class IdleGhostApp:
         # Configure style
         style = ttk.Style()
         style.theme_use("clam")
-        style.configure("TButton", background="#333", foreground="white", 
-                       padding=10, font=("Segoe UI", 10, "bold"))
-        style.configure("TLabel", background="#1f1f1f", foreground="white")
+        style.configure(
+            "TButton",
+            background="#001100",
+            foreground="#00FF00",
+            padding=10,
+            font=("Consolas", 10, "bold")
+        )
+        style.configure("TLabel", background="#000000", foreground="#00FF00")
 
         # Title
-        self.title_label = tk.Label(self.root, text="👻 IdleGhost", 
-                                   font=("Segoe UI", 16, "bold"), 
-                                   fg="#5DEBD7", bg="#1f1f1f")
+        self.title_label = tk.Label(
+            self.root,
+            text="IdleGhost :: Hacker Terminal",
+            font=("Consolas", 16, "bold"),
+            fg="#00FF00",
+            bg="#000000"
+        )
         self.title_label.pack(pady=10)
 
         # Subtitle
-        self.subtitle_label = tk.Label(self.root, text="Stealth Mode: Activated", 
-                                      font=("Segoe UI", 10), 
-                                      fg="#888", bg="#1f1f1f")
+        self.subtitle_label = tk.Label(
+            self.root,
+            text="Status: Terminal Online",
+            font=("Consolas", 10),
+            fg="#00AA00",
+            bg="#000000"
+        )
         self.subtitle_label.pack(pady=5)
 
         # Log box
-        self.log_box = tk.Text(self.root, height=12, width=60, 
-                              bg="#121212", fg="white", 
-                              bd=0, highlightthickness=0,
-                              font=("Consolas", 9))
+        self.log_box = tk.Text(
+            self.root,
+            height=12,
+            width=60,
+            bg="#000000",
+            fg="#00FF00",
+            bd=0,
+            highlightthickness=0,
+            font=("Consolas", 10)
+        )
         self.log_box.pack(padx=10, pady=10)
 
         # Buttons frame
-        button_frame = tk.Frame(self.root, bg="#1f1f1f")
+        button_frame = tk.Frame(self.root, bg="#000000")
         button_frame.pack(pady=10)
 
-        self.start_btn = ttk.Button(button_frame, text="🔥 Start Simulation", 
-                                   command=self.start_simulation)
+        self.start_btn = ttk.Button(button_frame, text="Start", command=self.start_simulation)
         self.start_btn.pack(side=tk.LEFT, padx=5)
 
-        self.stop_btn = ttk.Button(button_frame, text="❄️ Stop Simulation", 
-                                  command=self.stop_simulation)
+        self.stop_btn = ttk.Button(button_frame, text="Stop", command=self.stop_simulation)
         self.stop_btn.pack(side=tk.LEFT, padx=5)
 
-        self.exit_btn = ttk.Button(button_frame, text="💀 Exit", 
-                                  command=self.exit_app)
+        self.exit_btn = ttk.Button(button_frame, text="Exit", command=self.exit_app)
         self.exit_btn.pack(side=tk.LEFT, padx=5)
 
         # Status
-        self.status_label = tk.Label(self.root, text="Status: Ready to Ghost", 
-                                    font=("Segoe UI", 9), 
-                                    fg="#5DEBD7", bg="#1f1f1f")
+        self.status_label = tk.Label(
+            self.root,
+            text="Status: Ready",
+            font=("Consolas", 10),
+            fg="#00FF00",
+            bg="#000000"
+        )
         self.status_label.pack(pady=5)
 
     def setup_stealth_features(self):
@@ -304,8 +324,8 @@ class IdleGhostApp:
         try:
             logger.log("Ctrl+C pressed. Time to vanish...")
             self.root.after(0, self.show_window)
-            self.log_output("👋 Ctrl+C caught. Ghosting out in 3 seconds...")
-            self.root.after(3000, self.exit_app)
+            self.log_output("👋 Ctrl+C detected. Exiting in 1s...")
+            self.root.after(1000, self.exit_app)
         except Exception as e:
             logger.log(f"Error in popup_and_exit: {e}")
 
@@ -320,20 +340,18 @@ class IdleGhostApp:
 
     def auto_start(self):
         """Auto-start simulation and hide window"""
-        self.log_output("🚀 IdleGhost is initializing...")
-        self.log_output("⚡ Auto-starting simulation for maximum stealth!")
+        self.log_output("> Initializing terminal...")
         self.simulator.start()
-        self.log_output("🫥 Going invisible in 5 seconds...")
-        self.log_output("💡 Use Ctrl+C to summon me back!")
+        self.log_output("> Auto-hide in 1s. Press Ctrl+C to bring UI back and exit.")
         
-        # Hide window after 5 seconds
-        self.root.after(5000, self.hide_window)
+        # Hide window after ~1 second
+        self.root.after(1000, self.hide_window)
 
     def hide_window(self):
         """Hide the window"""
         try:
             self.root.withdraw()
-            self.log_output("👻 Vanished! I'm now invisible and working in the shadows...")
+            self.log_output("> UI hidden. Background activity running.")
         except Exception as e:
             logger.log(f"Error hiding window: {e}")
 
@@ -359,14 +377,13 @@ class IdleGhostApp:
     def exit_app(self):
         """Exit the application"""
         try:
-            self.log_output("💀 Preparing final ghost report...")
+            self.log_output("> Shutting down...")
             self.simulator.stop()
             logger.log("Application closed gracefully")
-            self.log_output("📊 Mission accomplished! All activities logged.")
-            self.log_output("👻 IdleGhost signing off... See you on the other side!")
+            self.log_output("> Goodbye.")
             
-            # Final delay before closing
-            self.root.after(2000, self.root.destroy)
+            # Final delay before closing (~1 second)
+            self.root.after(1000, self.root.destroy)
         except Exception as e:
             logger.log(f"Error during exit: {e}")
             self.root.destroy()
