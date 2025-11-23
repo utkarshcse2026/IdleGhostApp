@@ -2,6 +2,7 @@
 
 Automated log of daily development activity.
 
+- `2025-11-23` — Optimised repeated code patterns
 - `2025-11-21` — Addressed technical debt
 - `2025-11-19` — Added defensive checks
 - `2025-11-01` — Updated helper utilities
