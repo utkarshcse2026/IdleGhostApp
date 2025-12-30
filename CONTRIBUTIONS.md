@@ -2,6 +2,7 @@
 
 Automated log of daily development activity.
 
+- `2025-12-30` — Reviewed and cleaned up code structure
 - `2025-12-27` — General maintenance pass
 - `2025-12-26` — Stabilised core logic
 - `2025-12-25` — Optimised repeated code patterns
