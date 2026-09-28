@@ -2,6 +2,7 @@
 
 Automated log of daily development activity.
 
+- `2026-09-19` — Added missing null checks
 - `2026-09-16` — Updated project structure
 - `2026-09-09` — Validated core workflows
 - `2026-08-09` — Code style improvements
