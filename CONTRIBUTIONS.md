@@ -2,6 +2,7 @@
 
 Automated log of daily development activity.
 
+- `2025-12-15` — Polished output formatting
 - `2025-11-30` — Refactored repeated logic into helpers
 - `2025-11-12` — General maintenance pass
 - `2025-11-04` — Minor performance improvements
